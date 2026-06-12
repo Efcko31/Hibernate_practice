@@ -39,7 +39,6 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByIdWithBasket(Long id) {
         log.info("DAO: Поиск пользователя по ID: {} с загрузкой корзины (JOIN FETCH)", id);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Оставляем FetchType.LAZY в сущности, но выкачиваем корзину ОДНИМ запросом, когда это нужно
             String hql = "SELECT u FROM User u LEFT JOIN FETCH u.productBasket WHERE u.id = :id";
             User user = session.createQuery(hql, User.class)
                     .setParameter("id", id)

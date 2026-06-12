@@ -80,8 +80,7 @@ public class MainTestClass {
         System.out.print("Введите ID пользователя для просмотра корзины: ");
         Long userId = scanner.nextLong();
 
-        // Используем метод с JOIN FETCH, чтобы не упал LazyInitializationException
-        userRepository.findByIdWithBasket(userId).ifPresentOrElse(user -> {
+       userRepository.findByIdWithBasket(userId).ifPresentOrElse(user -> {
             System.out.printf("Корзина пользователя %s:\n", user.getUsername());
             if (user.getProductBasket() == null || user.getProductBasket().isEmpty()) {
                 System.out.println("  [Корзина пуста]");
@@ -103,7 +102,6 @@ public class MainTestClass {
             System.out.print("Введите новый username (текущий: " + user.getUsername() + "): ");
             user.setUsername(scanner.nextLine());
 
-            // Запускаем merge через DAO
             userRepository.update(user);
         }, () -> System.out.println("Пользователь не найден!"));
     }
@@ -112,7 +110,6 @@ public class MainTestClass {
         System.out.print("Введите ID пользователя для удаления: ");
         Long id = scanner.nextLong();
 
-        // Удалит юзера и каскадно очистит basket_items благодаря orphanRemoval/CascadeType.ALL
         userRepository.deleteById(id);
     }
 }
