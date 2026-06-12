@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,14 @@ public class User {
     @Column(name = "hash_for_hash")
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "product_basket")
+//    @JoinColumn(name = "product_basket")
     private List<BasketItem> productBasket;
+
+    public void addBasketItem(BasketItem item) {
+        if(this.productBasket == null) {
+            this.productBasket = new ArrayList<>();
+        }
+        this.productBasket.add(item);
+        item.setUser(this);
+    }
 }

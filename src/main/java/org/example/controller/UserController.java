@@ -2,19 +2,18 @@ package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.repository.UserRepositoryImpl;
 import org.example.entity.User;
-import org.example.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet("/api/users/*")
+//@WebServlet("/api/users/*")
 public class UserController extends HttpServlet {
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepositoryImpl userRepositoryImpl = new UserRepositoryImpl();
     private final ObjectMapper objectMapper = new ObjectMapper(); //для парсинга JSON
 
     //GetMapping("/{id}")
@@ -27,7 +26,7 @@ public class UserController extends HttpServlet {
         }
 
         Long userId = Long.parseLong(pathInfo.substring(1));
-        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<User> userOpt = userRepositoryImpl.findById(userId);
 
         if(userOpt.isPresent()) {
             response.setContentType("application/json");
