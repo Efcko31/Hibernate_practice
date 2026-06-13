@@ -27,7 +27,6 @@ public class User {
     @Column(name = "hash_for_hash")
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "product_basket")
     private List<BasketItem> productBasket;
 
     public void addBasketItem(BasketItem item) {

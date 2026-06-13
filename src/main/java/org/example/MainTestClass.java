@@ -1,7 +1,5 @@
 package org.example;
 
-import org.example.repository.UserRepository;
-import org.example.repository.UserRepositoryImpl;
 import org.example.entity.User;
 import org.example.service.UserService;
 import org.example.util.HibernateUtil;
@@ -9,7 +7,6 @@ import org.example.util.HibernateUtil;
 import java.util.Scanner;
 
 public class MainTestClass {
-    private static final UserRepository userRepository = new UserRepositoryImpl();
     private static final UserService userService = new UserService();
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -35,7 +32,7 @@ public class MainTestClass {
                 case 2 -> showAllUsers();
                 case 3 -> addProductToBasket();
                 case 4 -> showUserBasket();
-                case 5 -> updateUsername();
+                case 5 -> updateUserData();
                 case 6 -> deleteUser();
                 case 0 -> {
                     System.out.println("Закрытие сессий и выход...");
@@ -48,28 +45,28 @@ public class MainTestClass {
     }
 
     private static void createNewUser() {
-        User user = new User();
-        System.out.print("Введите username: ");
-        user.setUsername(scanner.nextLine());
-        System.out.print("Введите пароль: ");
-        user.setPassword(scanner.nextLine());
 
-        userRepository.save(user);
+        System.out.println("Введите username");
+        String username = scanner.nextLine();
+
+        System.out.println("Придумайте пароль");
+        String pass = scanner.nextLine();
+
+        userService.create(username, pass);
     }
 
     private static void showAllUsers() {
         System.out.println("\n--- Список пользователей в БД ---");
-        userRepository.findAll().forEach(user ->
-                System.out.printf("ID: %d | Логин: %s \n",
-                        user.getId(), user.getUsername())
-        );
+        userService.showAllUsers();
     }
 
     private static void addProductToBasket() {
         System.out.print("Введите ID пользователя: ");
         Long userId = scanner.nextLong();
+
         System.out.print("Введите ID продукта из каталога (например, 1 или 2): ");
         Long productId = scanner.nextLong();
+
         System.out.print("Количество: ");
         Integer quantity = scanner.nextInt();
 
@@ -79,37 +76,34 @@ public class MainTestClass {
     private static void showUserBasket() {
         System.out.print("Введите ID пользователя для просмотра корзины: ");
         Long userId = scanner.nextLong();
+        userService.showUserBasket(userId);
 
-       userRepository.findByIdWithBasket(userId).ifPresentOrElse(user -> {
-            System.out.printf("Корзина пользователя %s:\n", user.getUsername());
-            if (user.getProductBasket() == null || user.getProductBasket().isEmpty()) {
-                System.out.println("  [Корзина пуста]");
-            } else {
-                user.getProductBasket().forEach(item ->
-                        System.out.printf("  - %s | Количество: %d шт.\n",
-                                item.getProduct().getName(), item.getQuantity())
-                );
-            }
-        }, () -> System.out.println("Пользователь не найден!"));
     }
 
-    private static void updateUsername() {
+    private static void updateUserData() {
+        User updateData = new User();
+
         System.out.print("Введите ID пользователя: ");
-        Long id = scanner.nextLong();
+        updateData.setId(scanner.nextLong());
+        scanner.nextLine(); //очищаем буфер
+
+        System.out.print("Введите новое имя пользователя ");
+        updateData.setUsername(scanner.nextLine());
+
+        System.out.print("Введите новую почту пользователя ");
+        updateData.setEmail(scanner.nextLine())
+        ;
+        System.out.print("Введите новый возраст пользователя ");
+        updateData.setAge(scanner.nextInt());
         scanner.nextLine();
 
-        userRepository.findById(id).ifPresentOrElse(user -> {
-            System.out.print("Введите новый username (текущий: " + user.getUsername() + "): ");
-            user.setUsername(scanner.nextLine());
-
-            userRepository.update(user);
-        }, () -> System.out.println("Пользователь не найден!"));
+        userService.updateUser(updateData);
     }
 
     private static void deleteUser() {
         System.out.print("Введите ID пользователя для удаления: ");
         Long id = scanner.nextLong();
 
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
     }
 }
