@@ -17,8 +17,8 @@
 
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="org.example.entity.User"/>
-        <mapping class="org.example.entity.Product"/>
-        <mapping class="org.example.entity.BasketItem"/>
+        <mapping class="org.example.entity.UserEntity"/>
+        <mapping class="org.example.entity.ProductEntity"/>
+        <mapping class="org.example.entity.BasketItemEntity"/>
     </session-factory>
 </hibernate-configuration>

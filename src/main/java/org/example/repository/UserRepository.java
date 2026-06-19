@@ -1,20 +1,20 @@
 package org.example.repository;
 
-import org.example.entity.User;
+import org.example.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    void save(User user);
+    void save(UserEntity userEntity);
 
-    Optional<User> findById(Long id);
+    Optional<UserEntity> findById(Long id);
 
-    Optional<User> findByIdWithBasket(Long id);
+    Optional<UserEntity> findByIdWithBasket(Long id);
 
-    List<User> findAll();
+    List<UserEntity> findAll();
 
-    void update(User user);
+    void update(UserEntity userEntity);
 
     void deleteById(Long id);
 }

@@ -1,7 +1,7 @@
 package org.example.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.entity.User;
+import org.example.entity.UserEntity;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -12,23 +12,23 @@ import java.util.Optional;
 public class UserRepositoryImpl implements UserRepository {
 
     @Override
-    public void save(User user) {
-        log.info("DAO: Начало сохранения пользователя: {}", user.getUsername());
+    public void save(UserEntity userEntity) {
+        log.info("DAO: Начало сохранения пользователя: {}", userEntity.getUsername());
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
-            session.persist(user);
+            session.persist(userEntity);
             tx.commit();
-            log.info("DAO: Пользователь {} успешно сохранен с id={}", user.getUsername(), user.getId());
+            log.info("DAO: Пользователь {} успешно сохранен с id={}", userEntity.getUsername(), userEntity.getId());
         } catch (Exception e) {
-            log.error("DAO: Ошибка при сохранении пользователя {}", user.getUsername(), e);
+            log.error("DAO: Ошибка при сохранении пользователя {}", userEntity.getUsername(), e);
         }
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<UserEntity> findById(Long id) {
         log.info("DAO: Поиск пользователя по id={}", id);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return Optional.ofNullable(session.get(User.class, id));
+            return Optional.ofNullable(session.get(UserEntity.class, id));
         } catch (Exception e) {
             log.error("DAO: Ошибка при поиске пользователя по id={}", id, e);
             return Optional.empty();
@@ -36,14 +36,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByIdWithBasket(Long id) {
+    public Optional<UserEntity> findByIdWithBasket(Long id) {
         log.info("DAO: Поиск пользователя по id={} с загрузкой корзины (JOIN FETCH)", id);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT u FROM User u LEFT JOIN FETCH u.productBasket WHERE u.id = :id";
-            User user = session.createQuery(hql, User.class)
+            UserEntity userEntity = session.createQuery(hql, UserEntity.class)
                     .setParameter("id", id)
                     .uniqueResult();
-            return Optional.ofNullable(user);
+            return Optional.ofNullable(userEntity);
         } catch (Exception e) {
             log.error("DAO: Ошибка JOIN FETCH запроса для пользователя id={}", id, e);
             return Optional.empty();
@@ -51,23 +51,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserEntity> findAll() {
         log.info("DAO: Запрос списка всех пользователей");
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM User", User.class).list();
+            return session.createQuery("FROM User", UserEntity.class).list();
         }
     }
 
     @Override
-    public void update(User user) {
-        log.info("DAO: Обновление пользователя с id={}", user.getId());
+    public void update(UserEntity userEntity) {
+        log.info("DAO: Обновление пользователя с id={}", userEntity.getId());
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
-            session.merge(user);
+            session.merge(userEntity);
             tx.commit();
-            log.info("DAO: Данные пользователя с id={} успешно обновлены", user.getId());
+            log.info("DAO: Данные пользователя с id={} успешно обновлены", userEntity.getId());
         } catch (Exception e) {
-            log.error("DAO: Ошибка при обновлении пользователя id={}", user.getId(), e);
+            log.error("DAO: Ошибка при обновлении пользователя id={}", userEntity.getId(), e);
         }
     }
 
@@ -76,9 +76,9 @@ public class UserRepositoryImpl implements UserRepository {
         log.info("DAO: Удаление пользователя по id={}", id);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
-            User user = session.get(User.class, id);
-            if (user != null) {
-                session.remove(user);
+            UserEntity userEntity = session.get(UserEntity.class, id);
+            if (userEntity != null) {
+                session.remove(userEntity);
                 log.info("DAO: Пользователь с id={} успешно удален", id);
             } else {
                 log.warn("DAO: Пользователь с id={} не найден для удаления", id);

@@ -1,8 +1,8 @@
 package org.example.service;
 
-import org.example.entity.BasketItem;
-import org.example.entity.Product;
-import org.example.entity.User;
+import org.example.entity.BasketItemEntity;
+import org.example.entity.ProductEntity;
+import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.repository.UserRepositoryImpl;
 import org.example.util.HibernateUtil;
@@ -17,17 +17,17 @@ public class UserService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            User user = session.get(User.class, userId);
-            Product product = session.get(Product.class, productId);
+            UserEntity userEntity = session.get(UserEntity.class, userId);
+            ProductEntity productEntity = session.get(ProductEntity.class, productId);
 
-            if(user != null && product != null) {
-                BasketItem basketItem = new BasketItem();
-                basketItem.setUser(user);
-                basketItem.setProduct(product);
-                basketItem.setQuantity(quantity);
-                user.addBasketItem(basketItem);
+            if(userEntity != null && productEntity != null) {
+                BasketItemEntity basketItemEntity = new BasketItemEntity();
+                basketItemEntity.setUserEntity(userEntity);
+                basketItemEntity.setProductEntity(productEntity);
+                basketItemEntity.setQuantity(quantity);
+                userEntity.addBasketItem(basketItemEntity);
 
-                session.persist(basketItem);
+                session.persist(basketItemEntity);
             }
             transaction.commit();
             System.out.println("товар добавлен в корзину");
@@ -37,10 +37,10 @@ public class UserService {
     }
 
     public void create(String username, String pass) {
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPassword(pass);
-        userRepository.save(newUser);
+        UserEntity newUserEntity = new UserEntity();
+        newUserEntity.setUsername(username);
+        newUserEntity.setPassword(pass);
+        userRepository.save(newUserEntity);
     }
 
     public void showAllUsers() {
@@ -58,13 +58,13 @@ public class UserService {
             } else {
                 user.getProductBasket().forEach(item ->
                         System.out.printf("  - %s | Количество: %d шт.\n",
-                                item.getProduct().getName(), item.getQuantity())
+                                item.getProductEntity().getName(), item.getQuantity())
                 );
             }
         }, () -> System.out.println("Пользователь не найден!"));
     }
 
-    public void updateUser(User updateData) {
+    public void updateUser(UserEntity updateData) {
         userRepository.findById(updateData.getId()).ifPresentOrElse(user -> {
             System.out.println(String.format("Приветствую %s !", user.getUsername()));
 

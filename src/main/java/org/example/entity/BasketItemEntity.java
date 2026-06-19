@@ -8,17 +8,17 @@ import lombok.Setter;
 @Table(name = "basket_items")
 @Getter
 @Setter
-public class BasketItem {
+public class BasketItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity productEntity;
     private Integer quantity;
 }

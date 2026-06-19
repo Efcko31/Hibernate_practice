@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "users", schema = "public")
 @Getter
 @Setter
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,13 +27,13 @@ public class User {
     @Column(name = "hash_for_hash")
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BasketItem> productBasket;
+    private List<BasketItemEntity> productBasket;
 
-    public void addBasketItem(BasketItem item) {
+    public void addBasketItem(BasketItemEntity item) {
         if(this.productBasket == null) {
             this.productBasket = new ArrayList<>();
         }
         this.productBasket.add(item);
-        item.setUser(this);
+        item.setUserEntity(this);
     }
 }

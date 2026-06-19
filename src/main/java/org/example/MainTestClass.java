@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.entity.User;
+import org.example.entity.UserEntity;
 import org.example.service.UserService;
 import org.example.util.HibernateUtil;
 
@@ -81,7 +81,7 @@ public class MainTestClass {
     }
 
     private static void updateUserData() {
-        User updateData = new User();
+        UserEntity updateData = new UserEntity();
 
         System.out.print("Введите ID пользователя: ");
         updateData.setId(scanner.nextLong());
